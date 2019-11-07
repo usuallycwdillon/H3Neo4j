@@ -1,0 +1,56 @@
+Manifest-Version: 1.0
+Class-Path: concurrentlinkedhashmap-lru-1.4.2.jar neo4j-common-3.5.2-t
+ ests.jar neo4j-command-line-3.5.2.jar lucene-analyzers-common-5.5.5.j
+ ar server-api-3.5.2.jar lucene-queryparser-5.5.5.jar neo4j-logging-3.
+ 5.2.jar jackson-annotations-2.9.6.jar junit-4.12.jar jetty-util-9.4.1
+ 1.v20180605.jar jetty-webapp-9.4.11.v20180605.jar neo4j-server-3.5.2-
+ tests.jar neo4j-diagnostics-3.5.2.jar javax.servlet-api-3.1.0.jar bcp
+ kix-jdk15on-1.60.jar neo4j-lucene-index-3.5.2.jar neo4j-cypher-interp
+ reted-runtime-3.5.2.jar asm-util-6.2.jar jProcesses-1.6.4.jar jaxb-ap
+ i-2.3.0.jar netty-all-4.1.32.Final.jar neo4j-ast-3.5-3.5.2.jar bcprov
+ -jdk15on-1.60.jar neo4j-unsafe-3.5.2.jar neo4j-cypher-frontend-2.3-2.
+ 3.12.jar neo4j-cypher-planner-spi-3.5-3.5.2.jar neo4j-lucene-upgrade-
+ 3.5.2.jar istack-commons-runtime-3.0.5.jar neo4j-dbms-3.5.2.jar neo4j
+ -ssl-3.5.2.jar parboiled-scala_2.11-1.1.7.jar neo4j-cypher-expression
+ -3.4-3.4.11.jar neo4j-front-end-3.5-3.5.2.jar neo4j-security-3.5.2.ja
+ r httpclient-4.5.6.jar commons-configuration-1.10.jar neo4j-cypher-3.
+ 5.2.jar commons-codec-1.11.jar neo4j-cypher-compiler-3.1-3.1.9.jar je
+ tty-io-9.4.11.v20180605.jar neo4j-kernel-3.5.2.jar asm-6.2.jar neo4j-
+ kernel-3.5.2-tests.jar neo4j-browser-3.2.16.jar neo4j-index-3.5.2.jar
+  jetty-security-9.4.11.v20180605.jar commons-lang3-3.8.jar neo4j-cyph
+ er-logical-plans-3.5-3.5.2.jar jersey-core-1.19.3.jar jackson-mapper-
+ asl-1.9.13.jar jackson-databind-2.9.6.jar neo4j-kernel-api-3.5.2.jar 
+ neo4j-concurrent-3.5.2.jar neo4j-graph-matching-3.1.9.jar jackson-jax
+ rs-1.9.13.jar annotations-17.0.0.jar neo4j-cypher-planner-3.4-3.4.11.
+ jar neo4j-data-collector-3.5.2.jar neo4j-java-driver-1.7.5.jar txw2-2
+ .3.0.1.jar neo4j-values-3.5.2.jar neo4j-cypher-ir-3.5-3.5.2.jar neo4j
+ -resource-3.5.2.jar neo4j-server-3.5.2.jar asm-tree-6.2.jar WMI4Java-
+ 1.6.1.jar neo4j-consistency-check-3.5.2.jar parboiled-core-1.1.7.jar 
+ lucene-codecs-5.5.5.jar jackson-core-2.9.6.jar neo4j-cypher-planner-3
+ .5-3.5.2.jar neo4j-cypher-util-3.4-3.4.11.jar commons-logging-1.2.jar
+  geojson-jackson-1.8.1.jar neo4j-cypher-compiler-2.3-2.3.12.jar neo4j
+ -3.5.2.jar neo4j-cypher-runtime-util-3.5.2.jar commons-compress-1.18.
+ jar scala-reflect-2.11.12.jar caffeine-2.3.3.jar jaxb-runtime-2.3.0.1
+ .jar scala-library-2.11.12.jar neo4j-fulltext-index-3.5.2.jar neo4j-c
+ ypher-planner-spi-3.4-3.4.11.jar neo4j-legacy-3.5.2.jar openCypher-fr
+ ontend-1-3.4.11.jar neo4j-graph-algo-3.5.2.jar neo4j-import-tool-3.5.
+ 2.jar neo4j-udc-3.5.2.jar asm-analysis-6.2.jar neo4j-csv-3.5.2.jar js
+ r311-api-1.1.2.r612.jar neo4j-parser-3.5-3.5.2.jar neo4j-cypher-front
+ end-3.1-3.1.9.jar neo4j-configuration-3.5.2.jar lucene-core-5.5.5.jar
+  FastInfoset-1.2.13.jar neo4j-procedure-api-3.5.2.jar jetty-xml-9.4.1
+ 1.v20180605.jar jersey-client-1.19.3.jar commons-text-1.4.jar neo4j-i
+ o-3.5.2-tests.jar commons-io-2.6.jar jetty-servlet-9.4.11.v20180605.j
+ ar neo4j-common-3.5.2.jar jPowerShell-1.9.jar neo4j-graphdb-api-3.5.2
+ .jar neo4j-io-3.5.2.jar jackson-core-asl-1.9.13.jar tools.jar stax-ex
+ -1.7.8.jar neo4j-codegen-3.5.2.jar hamcrest-core-1.3.jar jersey-servl
+ et-1.19.3.jar neo4j-expressions-3.5-3.5.2.jar neo4j-spatial-index-3.5
+ .2.jar jetty-http-9.4.11.v20180605.jar eclipse-collections-api-9.2.0.
+ jar opencsv-2.3.jar h3-3.4.1.jar jersey-server-1.19.3.jar jaxb-core-2
+ .3.0.1.jar neo4j-bolt-3.5.2.jar neo4j-cypher-logical-plans-3.4-3.4.11
+ .jar neo4j-collections-3.5.2.jar neo4j-harness-3.5.2.jar neo4j-cypher
+ -ir-3.4-3.4.11.jar activation-1.1.1.jar neo4j-rewriting-3.5-3.5.2.jar
+  jetty-server-9.4.11.v20180605.jar httpcore-4.4.10.jar eclipse-collec
+ tions-9.2.0.jar neo4j-jmx-3.5.2.jar commons-lang-2.6.jar neo4j-util-3
+ .5-3.5.2.jar
+Main-Class: 
+
