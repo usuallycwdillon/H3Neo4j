@@ -8,6 +8,11 @@ import org.neo4j.logging.Log;
 import org.neo4j.procedure.Context;
 import scala.Int;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import static edu.gmu.cds.cdillon2.schema.RelationshipTypes.*;
 
 public class Polity {
@@ -16,10 +21,6 @@ public class Polity {
     private String abb;
     private String cowcode;
 
-    @Context
-    public GraphDatabaseService db;
-    @Context
-    public Log log;
 
     public Polity (Node node) {
         this.underlyingNode = node;
@@ -51,13 +52,12 @@ public class Polity {
         return null;
     }
 
-    public int getMilExFact(int year) {
-        for (Relationship r : underlyingNode.getRelationships(MILEX)) {
-            int during = Integer.parseInt(r.getProperty("during").toString());
-//            int during = (Integer) r.getProperty("during");
-            if (during==year) {
-                Long value = (Long) r.getOtherNode(this.underlyingNode).getProperty("value") * 1000;
-                return value.intValue();
+    public int getMilExFact(int y) {
+        Iterable<Relationship> rels = underlyingNode.getRelationships(MILEX);
+        for (Relationship r : rels) {
+            int during = ((Number) r.getProperty("during")).intValue();
+            if (during==y) {
+                return ((Number) r.getOtherNode(this.underlyingNode).getProperty("value")).intValue();
             }
         }
         return 0;
@@ -65,16 +65,36 @@ public class Polity {
 
     public int getPopFact(int year) {
         for (Relationship r : underlyingNode.getRelationships(POPULATION)) {
-            int during = Integer.parseInt(r.getProperty("during").toString());
-//            int during = (Integer) r.getProperty("during");
+            int during = ((Number) r.getProperty("during")).intValue();
             if (during==year) {
-                Long value = (Long) r.getOtherNode(this.underlyingNode).getProperty("value") * 1000;
-                return value.intValue();
+                return ((Number) r.getOtherNode(this.underlyingNode).getProperty("value")).intValue();
             }
         }
-        return 1;
+        return 0;
     }
 
+    public int getUrbanPopFact(int year) {
+        for (Relationship r : underlyingNode.getRelationships(URBAN_POPULATION)) {
+            int during = ((Number) r.getOtherNode(this.underlyingNode).getProperty("during")).intValue();
+            if (during==year) {
+                return ((Number) r.getOtherNode(this.underlyingNode).getProperty("value")).intValue();
+            }
+        }
+        return 0;
+    }
+
+    public Node getPolityFact(int year) {
+        for (Relationship r : underlyingNode.getRelationships(DESCRIBES_POLITY_OF)) {
+//            LocalDate y = LocalDate.of(year, 01, 01);
+            int from = ((LocalDate) r.getOtherNode(this.underlyingNode).getProperty("from")).getYear();
+            int until = (r.getOtherNode(this.underlyingNode).hasProperty("until")) ?  (
+                    (LocalDate) r.getOtherNode(this.underlyingNode).getProperty("until")).getYear() : 2050;
+            if (from < year && until >= year) {
+                return r.getOtherNode(this.underlyingNode);
+            }
+        }
+        return null;
+    }
 
 
     @Override

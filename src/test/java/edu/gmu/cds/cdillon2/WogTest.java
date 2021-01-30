@@ -5,16 +5,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * Unit test for simple H3Neo4j.
+ * Unit test for simple Wog.
  */
-public class H3Neo4jTest
-{
+public class WogTest {
     /**
      * Rigorous Test :-)
      */
     @Test
-    public void shouldAnswerWithTrue()
-    {
+    public void shouldAnswerWithTrue() {
         assertTrue( true );
     }
+
 }

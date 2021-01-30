@@ -5,19 +5,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>edu.gmu.cds.cdillon2</groupId>
-  <artifactId>h3neo4j</artifactId>
+  <artifactId>wog</artifactId>
   <version>1.0-SNAPSHOT</version>
 
 
 
   <packaging>jar</packaging>
-  <name>h3neo4j</name>
-  <description>Stored procedures to import GeoJSON files and return Uber H3 tiles, along with some helpful functions.</description>
-
+  <name>wog</name>
+  <description>Stored procedures for the World Order Graph. Eg, to import GeoJSON files and return Uber H3 tiles, along with some helpful functions to transit the WOG.</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
@@ -60,7 +60,12 @@
     <dependency>
       <groupId>edu.gmu.eclab</groupId>
       <artifactId>mason</artifactId>
-      <version>19</version>
+      <version>20</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-core</artifactId>
+      <version>1.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains</groupId>
@@ -118,6 +123,18 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <filters>
+            <filter>
+              <artifact> *:* </artifact>
+              <excludes>
+                <exclude>META_INF/*.SF</exclude>
+                <exclude>META_INF/*.DSA</exclude>
+                <exclude>META_INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
       </plugin>
     </plugins>
   </build>

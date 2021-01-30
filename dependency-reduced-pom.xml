@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.gmu.cds.cdillon2</groupId>
-  <artifactId>h3neo4j</artifactId>
-  <name>h3neo4j</name>
+  <artifactId>wog</artifactId>
+  <name>wog</name>
   <version>1.0-SNAPSHOT</version>
-  <description>Stored procedures to import GeoJSON files and return Uber H3 tiles, along with some helpful functions.</description>
+  <description>Stored procedures for the World Order Graph. Eg, to import GeoJSON files and return Uber H3 tiles, along with some helpful functions to transit the WOG.</description>
   <build>
     <plugins>
       <plugin>
@@ -27,6 +27,18 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META_INF/*.SF</exclude>
+                <exclude>META_INF/*.DSA</exclude>
+                <exclude>META_INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
       </plugin>
     </plugins>
   </build>

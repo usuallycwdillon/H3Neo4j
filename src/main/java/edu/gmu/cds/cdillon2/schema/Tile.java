@@ -1,16 +1,10 @@
 package edu.gmu.cds.cdillon2.schema;
 
 import com.uber.h3core.H3Core;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.logging.Log;
+import org.neo4j.graphdb.*;
 import org.neo4j.procedure.Context;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static edu.gmu.cds.cdillon2.schema.RelationshipTypes.*;
 
@@ -21,16 +15,17 @@ public class Tile {
     private Long h3Id;
     private int face;
     private int resolution;
-    private List<String> neighbors = new ArrayList<>();
-    private int population;
-    private int urbanPopulation;
+    private double population = 0;
+    private double urbanPopulation = 0;
+    private double wealth = 0.0;
+    private double gtp = 0.0; // gross tile product
+    private double builtArea = 0.0;
+    private double computedValue = 0.0;
     private int year;
-    private double wealth;
+    private int representation;
 
     @Context
-    public GraphDatabaseService db;
-    @Context
-    public Log log;
+    GraphDatabaseService db;
 
     public Tile(Node node) {
         this.underlyingNode = node;
@@ -43,12 +38,10 @@ public class Tile {
     public void configureTile() {
         try {
             H3Core h3 = H3Core.newInstance();
-            String h3address = (String) underlyingNode.getProperty(ADDRESS);
+            String h3address = getAddress();
             this.h3Id = h3.stringToH3(h3address);
             this.face = h3.h3GetBaseCell(h3address);
             this.resolution = h3.h3GetResolution(h3address);
-            this.neighbors = h3.hexRing(h3address, 1);
-            this.neighbors.remove(h3address);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,23 +64,280 @@ public class Tile {
     }
 
     public List<String> getNeighbors() {
+        List<String> neighbors = new ArrayList<>();
+        String h3address = getAddress();
+        try {
+           H3Core h3 = H3Core.newInstance();
+           neighbors = h3.hexRing(h3address, 1);
+           neighbors.remove(h3address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return neighbors;
     }
 
-    public int getPopulation() {
+    public double getPopulation() {
         return population;
     }
 
-    public void setPopulation(int pop) {
+    public void setPopulation(double pop) {
         this.population = pop;
     }
 
-    public int getUrbanPopulation() {
+    public void addPopulation(double p) {
+        this.population += p;
+    }
+
+    public Node getPopulationFact(int year) {
+        RelationshipTypes popRel = SIM_POPULATION_1816;
+
+        switch (year) {
+            case 1816:
+                popRel = SIM_POPULATION_1816;
+                break;
+            case 1850:
+                popRel = SIM_POPULATION_1850;
+                break;
+            case 1880:
+                popRel = SIM_POPULATION_1880;
+                break;
+            case 1914:
+                popRel = SIM_POPULATION_1914;
+                break;
+            case 1938:
+                popRel = SIM_POPULATION_1938;
+                break;
+            case 1945:
+                popRel = SIM_POPULATION_1945;
+                break;
+            case 1994:
+                popRel = SIM_POPULATION_1994;
+                break;
+        }
+        for (Relationship r : underlyingNode.getRelationships(popRel)) {
+            int rl = ((Number) r.getProperty("during")).intValue();
+            if (rl==year) {
+                return r.getOtherNode(underlyingNode);
+            }
+        }
+        return null;
+    }
+
+    public Double getPopulationFactValue(int y) {
+        Node f = getPopulationFact(y);
+        Double iv = (Double) f.getProperty("value");
+        return iv;
+    }
+
+    public double getUrbanPopulation() {
         return urbanPopulation;
     }
 
-    public void setUrbanPopulation(int urbanPop) {
+    public void setUrbanPopulation(double urbanPop) {
         this.urbanPopulation = urbanPop;
+    }
+
+    public Node getUrbanPopFact(int year) {
+        RelationshipTypes uPopRel = SIM_URBAN_POPULATION_1816;
+
+        switch (year) {
+            case 1816:
+                uPopRel = SIM_URBAN_POPULATION_1816;
+                break;
+            case 1850:
+                uPopRel = SIM_URBAN_POPULATION_1850;
+                break;
+            case 1880:
+                uPopRel = SIM_URBAN_POPULATION_1880;
+                break;
+            case 1914:
+                uPopRel = SIM_URBAN_POPULATION_1914;
+                break;
+            case 1938:
+                uPopRel = SIM_URBAN_POPULATION_1938;
+                break;
+            case 1945:
+                uPopRel = SIM_URBAN_POPULATION_1945;
+                break;
+            case 1994:
+                uPopRel = SIM_URBAN_POPULATION_1994;
+                break;
+        }
+        for (Relationship r : underlyingNode.getRelationships(uPopRel)) {
+            int during = ((Number) r.getProperty("during")).intValue();
+            if (during==year) {
+                return r.getOtherNode(this.underlyingNode);
+            }
+        }
+        return null;
+    }
+
+    public Double getUrbanPopFactValue(int year) {
+        Node f = getPopulationFact(year);
+        Double iv = (Double) f.getProperty("value");
+        return iv;
+    }
+
+    public double getWealth() {
+        return wealth;
+    }
+
+    public void setWealth(double wealth) {
+        this.wealth = wealth;
+    }
+
+    public Node getWealthFact(int year) {
+        RelationshipTypes wRel = SIM_WEALTH_1816;
+
+        switch (year) {
+            case 1816:
+                wRel = SIM_WEALTH_1816;
+                break;
+            case 1850:
+                wRel = SIM_WEALTH_1850;
+                break;
+            case 1880:
+                wRel = SIM_WEALTH_1880;
+                break;
+            case 1914:
+                wRel = SIM_WEALTH_1914;
+                break;
+            case 1938:
+                wRel = SIM_WEALTH_1938;
+                break;
+            case 1945:
+                wRel = SIM_WEALTH_1945;
+                break;
+            case 1994:
+                wRel = SIM_WEALTH_1994;
+                break;
+        }
+        for (Relationship r : underlyingNode.getRelationships(wRel)) {
+            int during = ((Number) r.getProperty("during")).intValue();
+            if (during==year) {
+                return r.getOtherNode(this.underlyingNode);
+            }
+        }
+        return null;
+    }
+
+    public Double getWealthFactValue(int year) {
+        Node f = this.getWealthFact(year);
+        Double iv = (Double) f.getProperty("value");
+        return iv;
+    }
+
+    public Node getGTPFact(int year) {
+        RelationshipTypes gtpRel = SIM_PRODUCTION_1816;
+
+        switch (year) {
+            case 1816:
+                gtpRel = SIM_PRODUCTION_1816;
+                break;
+            case 1850:
+                gtpRel = SIM_PRODUCTION_1850;
+                break;
+            case 1880:
+                gtpRel = SIM_PRODUCTION_1880;
+                break;
+            case 1914:
+                gtpRel = SIM_PRODUCTION_1914;
+                break;
+            case 1938:
+                gtpRel = SIM_PRODUCTION_1938;
+                break;
+            case 1945:
+                gtpRel = SIM_PRODUCTION_1945;
+                break;
+            case 1994:
+                gtpRel = SIM_PRODUCTION_1994;
+                break;
+        }
+        for (Relationship r : underlyingNode.getRelationships(gtpRel)) {
+            int during = ((Number) r.getProperty("during")).intValue();
+            if (during==year) {
+                return r.getOtherNode(this.underlyingNode);
+            }
+        }
+        return null;
+    }
+
+    public Double getGTPFactValue(int year) {
+        Node f = getGTPFact(year);
+        Double iv = (Double) f.getProperty("value");
+        return iv;
+    }
+
+    public double getGtp() {
+        return gtp;
+    }
+
+    public void setGtp(double gtp) {
+        this.gtp = gtp;
+    }
+
+    public double getBuiltArea() {
+        return builtArea;
+    }
+
+    public void setBuiltArea(double builtArea) {
+        this.builtArea = builtArea;
+    }
+
+    public Double getBuiltAreaFactValue(int year) {
+        Node f = getBuiltAreaFact(year);
+        Double ba = (Double) f.getProperty("value");
+        return ba;
+    }
+
+    public Node getBuiltAreaFact(int year) {
+        RelationshipTypes builtRel = SIM_BUILT_AREA_1816;
+        switch (year) {
+            case 1816:
+                builtRel = SIM_BUILT_AREA_1816;
+                break;
+            case 1850:
+                builtRel = SIM_BUILT_AREA_1850;
+                break;
+            case 1880:
+                builtRel = SIM_BUILT_AREA_1880;
+                break;
+            case 1914:
+                builtRel = SIM_BUILT_AREA_1914;
+                break;
+            case 1938:
+                builtRel = SIM_BUILT_AREA_1938;
+                break;
+            case 1945:
+                builtRel = SIM_BUILT_AREA_1945;
+                break;
+            case 1994:
+                builtRel = SIM_BUILT_AREA_1994;
+                break;
+        }
+        for (Relationship r : underlyingNode.getRelationships(builtRel)) {
+            int during = ((Number) r.getProperty("during")).intValue();
+            if (during==year) {
+                return r.getOtherNode(this.underlyingNode);
+            }
+        }
+        return null;
+    }
+
+    public double getComputedValue(String p) {
+        if (p == "builtArea") {
+            return computedValue / 1770.3235517;
+        } else {
+            return computedValue;
+        }
+    }
+
+    public void setComputedValue(double c) {
+        this.computedValue = c;
+    }
+
+    public void addComputedValue(double c) {
+        computedValue += c;
     }
 
     public int getYear() {
@@ -98,36 +348,13 @@ public class Tile {
         this.year = year;
     }
 
-    public double getWealth() {
-        return (Double) underlyingNode.getProperty("wealth");
-    }
-
-    public void setWealth(double wealth) {
-        this.wealth = wealth;
-    }
-
-    public Node getPopulationFact(int year) {
-        for (Relationship r : underlyingNode.getRelationships(SIM_POPULATION)) {
-            int during = Integer.parseInt(r.getProperty("year").toString());
-            if (during==year) {
-                return r.getOtherNode(this.underlyingNode);
-            }
-        }
-        return null;
-    }
-
-    public Node getUrbanPopFact(int year) {
-        for (Relationship r : underlyingNode.getRelationships(SIM_URBAN_POPULATION)) {
-            int during = Integer.parseInt(r.getProperty("year").toString());
-            if (during==year) {
-                return r.getOtherNode(this.underlyingNode);
-            }
-        }
-        return null;
-    }
-
     public void abuts(Tile otherTile) {
         if (!this.equals( otherTile) ) {
+            try {
+                getAbuts(otherTile);
+            } catch (NotFoundException e) {
+                return;
+            }
             Relationship r = getAbuts(otherTile);
             if (r == null) {
                 underlyingNode.createRelationshipTo(otherTile.getUnderlyingNode(), ABUTS);
@@ -154,31 +381,34 @@ public class Tile {
         return null;
     }
 
-    public Relationship getPopFactRelation(int year) {
-        for (Relationship rel : underlyingNode.getRelationships(SIM_POPULATION)) {
-            if ((Integer) rel.getProperty("year") == year) {
-                return rel;
-            }
+    public boolean isWater() {
+        try {
+            return (boolean) getUnderlyingNode().getProperty("isWater");
+        } catch (NotFoundException e) {
+            return false;
         }
-        return null;
-    }
-
-    public Relationship getUrbanPopFactRelation(int year) {
-        for (Relationship rel : underlyingNode.getRelationships(SIM_URBAN_POPULATION)) {
-            if ((Integer) rel.getProperty("year") == year) {
-                return rel;
-            }
-        }
-        return null;
     }
 
     public Relationship getFactDuringRel(Node y) {
         for (Relationship rel : underlyingNode.getRelationships(DURING)) {
+            try {
+                rel.getOtherNode(underlyingNode);
+            } catch (NotFoundException e) {
+                return null;
+            }
             if (rel.getOtherNode(underlyingNode).equals(y)) {
                 return rel;
             }
         }
         return null;
+    }
+
+    public int getRepresentation() {
+        return representation;
+    }
+
+    public void setRepresentation(int representation) {
+        this.representation = representation;
     }
 
     @Override

@@ -83,6 +83,7 @@ public class Fact {
         return null;
     }
 
+
     @Override
     public int hashCode() {
         return underlyingNode.hashCode();

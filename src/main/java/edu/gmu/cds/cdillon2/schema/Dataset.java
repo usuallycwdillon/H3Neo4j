@@ -10,19 +10,21 @@ public class Dataset {
     private static final String NAME = "name";
     private final Node underlyingNode;
     private String filename;
+    private String outputFile;
+    private String purpose;
+    private String url;
     private double version;
     private int year;
 
     @Context
     public GraphDatabaseService db;
-    @Context
-    public Log log;
 
     public Dataset(Node node) {
         this.underlyingNode = node;
     }
 
     public Dataset(String filename, String name, Double version, int year) {
+
         try (Transaction tx = db.beginTx()) {
             Node n = db.findNode(Labels.Dataset,"name", name);
             if (n==null) {
@@ -49,6 +51,10 @@ public class Dataset {
         return (String) underlyingNode.getProperty("filename");
     }
 
+    public void setOutputFile(String o) {
+        this.outputFile = o;
+    }
+
     public String getOutputFile() {
         return (String) underlyingNode.getProperty("outputFile");
     }
@@ -57,8 +63,8 @@ public class Dataset {
         return (Double) underlyingNode.getProperty("version");
     }
 
-    public int getYear() {
-        return (Integer) underlyingNode.getProperty("year");
+    public Long getYear() {
+        return (Long) underlyingNode.getProperty("year");
     }
 
     @Override
